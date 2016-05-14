@@ -1,0 +1,6 @@
+[package]
+name = "force_alias"
+version = "0.1.0"
+authors = ["Marcus Buffett <marcusbuffett@me.com>"]
+
+[dependencies]
