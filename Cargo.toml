@@ -1,6 +1,21 @@
 [package]
+authors = ["Marcus Buffett <marcusbuffett@me.com>"]
 name = "force_alias"
 version = "0.1.0"
-authors = ["Marcus Buffett <marcusbuffett@me.com>"]
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
 
 [dependencies]
+bodyparser = "*"
+hyper = "0.9.4"
+iron = "0.3.0"
+lazy_static = "0.2.1"
+router = "0.1.1"
+rustc-serialize = "*"
+serde_json = "0.7.0"
