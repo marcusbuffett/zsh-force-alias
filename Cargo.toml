@@ -14,6 +14,7 @@ path = "src/client.rs"
 [dependencies]
 bodyparser = "*"
 hyper = "0.9.4"
+indoc = "^0.1"
 iron = "0.3.0"
 lazy_static = "0.2.1"
 router = "0.1.1"

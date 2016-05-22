@@ -13,7 +13,7 @@ pub struct Alias {
     command: String
 }
 
-pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &Vec<Alias>) -> String {
+pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
     for alias in aliases {
         match alias.used_by(&command) {
@@ -34,6 +34,7 @@ pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &Ve
         Some(alias) => {
             let shortened = alias.use_in(command);
             if shortened.len() < command.len() {
+                used_aliases.push(alias.clone());
                 return shorten_command(&shortened, aliases, used_aliases);
             }
         }
@@ -138,6 +139,14 @@ impl Alias {
             contained = self.used_by(&command);
         }
         command
+    }
+
+    pub fn fmt_for_feedback(&self) -> String {
+        let mut formatted = format!("{} -> {}", self.alias, self.command);
+        if self.scope == AliasScope::Global {
+            formatted = formatted + " (GLOBAL) ";
+        }
+        formatted
     }
 }
 

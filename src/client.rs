@@ -1,3 +1,6 @@
+#![feature(plugin)]
+#![plugin(indoc)]
+
 extern crate hyper;
 
 use hyper::*;
@@ -31,8 +34,6 @@ fn send_command(client: Client, command: &String) {
             std::process::exit(0);
         }
         _ => {
-            println!("I'm sorry Dave, I can't let you do that.");
-            println!("Maybe you should use this command instead:");
             println!("{}", s);
             std::process::exit(1);
         }
@@ -41,7 +42,6 @@ fn send_command(client: Client, command: &String) {
 
 fn send_aliases(client: &Client) {
     let url: String = BASE_URL.to_string() + "aliases";
-    println!("INITING!");
     let mut command = String::new();
     command = "alias -L".to_string();
     let full_command = format!(
@@ -49,14 +49,12 @@ fn send_aliases(client: &Client) {
     [ -f /etc/zshrc ] && . /etc/zshrc; \
     [ -f ~/.zshrc ] && . ~/.zshrc; \
     {}", command);
-    println!("{:?}", full_command);
     let output = std::process::Command::new("zsh")
                      .arg("-c")
                      // TODO: make this less hacky
                      .arg(full_command)
                      .output()
                      .unwrap();
-    println!("{:?}", output);
     let stdout = std::str::from_utf8(&*output.stdout).unwrap();
     let mut res = client.post(&url).body(stdout).send().unwrap();
     match res.status {
@@ -67,7 +65,6 @@ fn send_aliases(client: &Client) {
         _ => {
             let mut s = String::new();
             res.read_to_string(&mut s).unwrap();
-            println!("{}", s);
             std::process::exit(1);
         }
     }
