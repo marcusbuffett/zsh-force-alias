@@ -48,13 +48,6 @@ fn main() {
                 old_aliases.push(new_alias);
             }
         }
-        // for (alias, command) in alias_map {
-            // aliases.push(Alias {
-                // scope: AliasScope::Normal,
-                // alias: alias,
-                // command: command
-            // });
-        // }
         Ok(Response::with((status::Ok, "Upload successful")))
     }
 
@@ -70,7 +63,7 @@ fn main() {
         if shortened.len() != command.len() {
             res_code = status::BadRequest;
             let mut feedback_lines = vec![
-                "I'm sorry Dave, I can't let you do that".to_string(),
+                "I'm sorry Dave, I can't let you do that.".to_string(),
                 "".to_string(),
                 "Maybe you should use this instead:".to_string(),
                 format!("> {}", shortened),
@@ -87,7 +80,6 @@ fn main() {
 
     fn list_aliases(req: &mut Request) -> IronResult<Response> {
         let aliases = ALIASES.lock().unwrap().clone();
-        // let aliases_json = serde_json::to_string_pretty(aliases.deref()).unwrap();
         Ok(Response::with((status::Ok, format!("{:?}", aliases))))
     }
 

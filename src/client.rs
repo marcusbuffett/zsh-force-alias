@@ -1,6 +1,3 @@
-#![feature(plugin)]
-#![plugin(indoc)]
-
 extern crate hyper;
 
 use hyper::*;
@@ -51,7 +48,6 @@ fn send_aliases(client: &Client) {
     {}", command);
     let output = std::process::Command::new("zsh")
                      .arg("-c")
-                     // TODO: make this less hacky
                      .arg(full_command)
                      .output()
                      .unwrap();

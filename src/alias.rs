@@ -79,7 +79,6 @@ pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
             scope = AliasScope::Normal;
             alias = left_side.split(" ").nth(1).unwrap().to_string();
         }
-        // let after_equals: String = left_and_right.join("");
         let mut command: String = util::unquote_string(&right_side);
         let unquoted_command = util::unquote_string(&command.to_string());
         aliases.push(Alias {
