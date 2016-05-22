@@ -1,4 +1,3 @@
-#![feature(custom_derive)]
 #[macro_use] extern crate lazy_static;
 extern crate iron;
 extern crate router;
@@ -9,9 +8,6 @@ extern crate serde_json;
 use iron::prelude::*;
 use iron::status;
 use router::Router;
-use std::collections::HashMap;
-use serde_json::de;
-use serde_json::ser;
 use std::io::Read;
 use std::sync::Mutex;
 use std::ops::Deref;
@@ -38,9 +34,8 @@ fn main() {
 
     fn post_aliases(req: &mut Request) -> IronResult<Response> {
         let mut body_str = String::new();
-        req.body.read_to_string(&mut body_str);
-        let mut aliasDeclarations = &body_str;
-        let alias_declarations : Vec<&str> = aliasDeclarations.split("\n").collect();
+        let _ = req.body.read_to_string(&mut body_str);
+        let alias_declarations : Vec<&str> = (&body_str).split("\n").collect();
         let new_aliases = alias::parse_alias_declarations(alias_declarations);
         let mut old_aliases = ALIASES.lock().unwrap();
         for new_alias in new_aliases {
@@ -53,19 +48,18 @@ fn main() {
 
     fn check_command(req: &mut Request) -> IronResult<Response> {
         let mut command = String::new();
-        req.body.read_to_string(&mut command);
-        let mut res_body = String::new();
+        let _ = req.body.read_to_string(&mut command);
         let mut res_code = status::Ok;
-        let mut shortened = String::new();
         let mut aliases: Vec<alias::Alias> = Vec::new();
         let shortened = alias::shorten_command(&command, ALIASES.lock().unwrap().deref(), &mut aliases);
         let mut feedback = String::new();
         if shortened.len() != command.len() {
             res_code = status::BadRequest;
+            let keystrokes_saved = command.len() - shortened.len();
             let mut feedback_lines = vec![
                 "I'm sorry Dave, I can't let you do that.".to_string(),
                 "".to_string(),
-                "Maybe you should use this instead:".to_string(),
+                format!("You could save {} keystrokes with:", keystrokes_saved),
                 format!("> {}", shortened),
                 "".to_string(),
                 "Relevant aliases:".to_string()
@@ -78,12 +72,12 @@ fn main() {
         Ok(Response::with((res_code, feedback)))
     }
 
-    fn list_aliases(req: &mut Request) -> IronResult<Response> {
+    fn list_aliases(_: &mut Request) -> IronResult<Response> {
         let aliases = ALIASES.lock().unwrap().clone();
         Ok(Response::with((status::Ok, format!("{:?}", aliases))))
     }
 
-    fn list_commands(req: &mut Request) -> IronResult<Response> {
+    fn list_commands(_req: &mut Request) -> IronResult<Response> {
         Ok(Response::with((status::Ok, "blah blah")))
     }
 

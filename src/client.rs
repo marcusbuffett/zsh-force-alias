@@ -22,12 +22,15 @@ fn main() {
 
 fn send_command(client: Client, command: &String) {
     let url: String = BASE_URL.to_string() + "commands";
-    let mut res = client.post(&url).body(command).send().unwrap();
+    let res_or_err = client.post(&url).body(command).send();
+    if res_or_err.is_err() {
+        return;
+    }
     let mut s = String::new();
+    let mut res = res_or_err.unwrap();
     res.read_to_string(&mut s).unwrap();
     match res.status {
         hyper::Ok => {
-            println!("{}", s);
             std::process::exit(0);
         }
         _ => {
@@ -39,8 +42,7 @@ fn send_command(client: Client, command: &String) {
 
 fn send_aliases(client: &Client) {
     let url: String = BASE_URL.to_string() + "aliases";
-    let mut command = String::new();
-    command = "alias -L".to_string();
+    let command = "alias -L".to_string();
     let full_command = format!(
     "export DISABLE_CLIENT=1; \
     [ -f /etc/zshrc ] && . /etc/zshrc; \

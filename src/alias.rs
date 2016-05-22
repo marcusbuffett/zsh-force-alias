@@ -6,7 +6,7 @@ pub enum AliasScope {
     Global
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Alias {
     scope: AliasScope,
     alias: String,
@@ -15,9 +15,10 @@ pub struct Alias {
 
 pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
+    println!("{:?}", aliases);
     for alias in aliases {
         match alias.used_by(&command) {
-            Some(x) => {
+            Some(_) => {
                 alias_matches.push(alias.clone())
             }
             _ => {
@@ -42,10 +43,6 @@ pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mu
         }
     }
     return command.clone();
-    // Find all aliases that match command
-    // Use alias with the longest expanded command
-    // Replace the expanded command with the alias
-    // Recurse
 }
 
 pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
@@ -57,20 +54,20 @@ pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
         //
         // http://pubs.opengroup.org/onlinepubs/000095399/basedefs/xbd_chap08.html
         let left_and_right : Vec<String> = declaration.split("=").map(|x| x.to_string()).collect();
-        if left_and_right.len() != 2 {
+        if left_and_right.len() < 2 {
             continue;
         }
-        let mut left_side = left_and_right.get(0).unwrap();
-        let mut right_side = left_and_right
+        let left_side = left_and_right.get(0).unwrap();
+        let right_side = left_and_right
             .iter()
             // Skip left-hand side
             .skip(1)
             // Clone strings because #join is only implemented for Vec<String>
             .map(|x| x.clone())
             .collect::<Vec<String>>()
-            .join("");
-        let mut scope = AliasScope::Normal;
-        let mut alias = String::new();
+            .join("=");
+        let scope;
+        let alias;
         if left_side.contains("alias -g") {
             scope = AliasScope::Global;
             alias = left_side.split(" ").nth(2).unwrap().to_string();
@@ -79,7 +76,7 @@ pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
             scope = AliasScope::Normal;
             alias = left_side.split(" ").nth(1).unwrap().to_string();
         }
-        let mut command: String = util::unquote_string(&right_side);
+        let command: String = util::unquote_string(&right_side);
         let unquoted_command = util::unquote_string(&command.to_string());
         aliases.push(Alias {
             scope: scope,
@@ -96,8 +93,8 @@ impl Alias {
         if i_opt == None {
             return None;
         }
-        let mut i = i_opt.unwrap();
-        let mut preceding_ch_opt = Some(' ');
+        let i = i_opt.unwrap();
+        let preceding_ch_opt;
         // To avoid an overflow by trying to subtract from 0
         //
         // There's probably a better idiom for this
@@ -184,20 +181,30 @@ fn use_in_works() {
 
 #[test]
 fn parse_alias_declarations_works() {
-    let input = "alias pu=pushd\nalias -g G='| grep'".to_string();
-    let declarations = input.split("\n").collect();
-    let aliases = parse_alias_declarations(declarations);
-    assert_eq!(aliases.len(), 2);
-    let alias_pu = Alias {
+    let pu_test = ("alias pu=pushd", Alias {
         scope: AliasScope::Normal,
         alias: "pu".to_string(),
         command: "pushd".to_string()
-    };
-    let alias_g = Alias {
+    });
+    let g_test = ("alias -g G='| grep'", Alias {
         scope: AliasScope::Global,
         alias: "G".to_string(),
         command: "| grep".to_string()
+    });
+    let grep_test = ("alias grep='grep --color=auto'", Alias {
+        scope: AliasScope::Normal,
+        alias: "grep".to_string(),
+        command: "grep --color=auto".to_string()
+    });
+    let test_cases = vec![pu_test, g_test, grep_test];
+    let test_declaration = |declaration: &String, desired: &Alias| {
+        let aliases = parse_alias_declarations(declaration.split("\n").collect());
+        println!("Testing {}", declaration);
+        assert!(aliases.len() != 0);
+        assert_eq!(aliases.get(0).unwrap(), desired);
     };
-    let desired_result = vec![alias_pu, alias_g];
-    assert_eq!(aliases, desired_result);
+    for test_case in test_cases {
+        let (declaration, desired) = test_case;
+        test_declaration(&declaration.to_string(), &desired);
+    }
 }
