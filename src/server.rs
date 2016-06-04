@@ -62,6 +62,7 @@ fn main() {
             res_code = status::BadRequest;
             let keystrokes_saved = command.len() - shortened.len();
             let mut feedback_lines = vec![
+                "".to_string(),
                 "I'm sorry Dave, I can't let you do that.".to_string(),
                 "".to_string(),
                 format!("You could save {} keystrokes with:", keystrokes_saved),
