@@ -13,6 +13,50 @@ pub struct Alias {
     command: String
 }
 
+// TODO: make private, call from within shorten
+pub fn lengthen_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
+    let mut alias_matches: Vec<Alias> = Vec::new();
+    for alias in aliases {
+        match alias.alias_used_by(&command) {
+            Some(_) => {
+                alias_matches.push(alias.clone())
+            }
+            _ => {
+                continue
+            }
+        }
+    }
+    let most_efficient_alias = alias_matches
+        .iter()
+        .max_by_key(|alias|
+            alias.command.len() - alias.alias.len());
+    match most_efficient_alias {
+        Some(alias) => {
+            let lengthened = alias.reverse_use_in(command);
+            if lengthened.len() > command.len() {
+                used_aliases.push(alias.clone());
+                let alias_idx = aliases.iter().position(|ref other_alias| other_alias == &alias).unwrap();
+                let mut remaining_aliases = aliases.clone();
+                remaining_aliases.remove(alias_idx);
+                return lengthen_command(&lengthened, &remaining_aliases, used_aliases);
+            }
+        }
+        None => {
+        }
+    }
+    return command.clone();
+}
+
+#[test]
+fn lengthen_command_works() {
+    let g_alias = Alias {
+        alias: "g".to_string(),
+        command: "git".to_string(),
+        scope: AliasScope::Normal
+    };
+    assert_eq!(lengthen_command(&"g status".to_string(), &mut vec![g_alias], &mut vec![]), "git status".to_string());
+}
+
 pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
     println!("{:?}", aliases);
