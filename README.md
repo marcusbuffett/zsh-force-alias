@@ -11,6 +11,8 @@ brew install rust-nightly
 git clone https://github.com/marcusbuffett/force_alias
 pushd force_alias
 cargo install --path .
+popd
+rm -rf force_alias
 ```
 
 Then, add the following snippet to the bottom of your zsh file.
