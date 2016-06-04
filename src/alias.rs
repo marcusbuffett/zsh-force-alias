@@ -14,6 +14,7 @@ pub struct Alias {
 }
 
 // TODO: make private, call from within shorten
+// Lengthens a command by replacing aliases with commands
 pub fn lengthen_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
     for alias in aliases {
@@ -57,6 +58,7 @@ fn lengthen_command_works() {
     assert_eq!(lengthen_command(&"g status".to_string(), &mut vec![g_alias], &mut vec![]), "git status".to_string());
 }
 
+// Shortens a command by using aliases
 pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
     for alias in aliases {
@@ -88,6 +90,13 @@ pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mu
     return command.clone();
 }
 
+// Parses alias declarations of the form:
+//
+// alias x="xargs"
+// alias g="git"
+// alias -g G="| grep"
+//
+// and turns them into a Vec<Alias>
 pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
     let mut aliases : Vec<Alias> = Vec::new();
     for declaration in alias_declarations {

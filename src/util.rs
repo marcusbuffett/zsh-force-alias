@@ -1,3 +1,6 @@
+// Gets the index of a substring 
+//
+// Why this isn't in the standard library is beyond me
 pub fn index_of_substr(string: &str, substr: &str) -> Option<usize> {
     for (i, _) in string.chars().enumerate() {
         let mut matches = true;
@@ -19,6 +22,9 @@ pub fn index_of_substr(string: &str, substr: &str) -> Option<usize> {
     None
 }
 
+// Somewhat poorly named, it gets the index of a substring,
+// but only if that substring does not have non-whitespace
+// characters around it
 pub fn index_of_word(string: &str, substr: &str) -> Option<usize> {
     let i_opt = index_of_substr(&string, substr);
     if i_opt == None {
@@ -57,6 +63,8 @@ fn index_of_substr_works() {
                                None);
 }
 
+// Unquotes a string if it's surrounded by quotes (' or "),
+// outherwise leaves it alone
 pub fn unquote_string(string: &String) -> String {
     let len = string.len();
     if len < 2 {

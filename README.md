@@ -24,7 +24,8 @@ Then, add the following snippet to the bottom of your zsh file.
 zle -N expand-aliases
 bindkey '^E' expand-aliases
 
-if [[ -z "$DISABLE_CLIENT" ]]; then
+(force-alias-server > /dev/null &) > /dev/null 2>&1
+if [[ -z "$NO_CHECK" ]]; then
   force-alias-client --init
 fi
 
@@ -44,7 +45,6 @@ autoload -U add-zsh-hook
 zle -N force_alias_hook
 bindkey '^J' force_alias_hook
 bindkey '^M' force_alias_hook
-(force-alias-server > /dev/null &) > /dev/null 2>&1
 #########################
 ## End ZSH force alias ##
 #########################
