@@ -19,6 +19,34 @@ pub fn index_of_substr(string: &str, substr: &str) -> Option<usize> {
     None
 }
 
+pub fn index_of_word(string: &str, substr: &str) -> Option<usize> {
+    let i_opt = index_of_substr(&string, substr);
+    if i_opt == None {
+        return None;
+    }
+    let i = i_opt.unwrap();
+    let preceding_ch_opt;
+    // To avoid an overflow by trying to subtract from 0
+    //
+    // There's probably a better idiom for this
+    if i == 0 {
+        preceding_ch_opt = None;
+    }
+    else {
+        preceding_ch_opt = string.chars().nth(i - 1);
+    }
+    let trailing_ch_opt = string.chars().nth(i + substr.len());
+    let ch_opt_valid = |ch: &Option<char>| {
+        *ch == None || ch.unwrap() == ' '
+    };
+    let both_valid = vec![preceding_ch_opt, trailing_ch_opt].iter()
+        .all(|x| ch_opt_valid(x));
+    if both_valid {
+        return Some(i);
+    }
+    return None;
+}
+
 #[test]
 fn index_of_substr_works() {
     assert_eq!(index_of_substr("Don't let your dreams be dreams",
