@@ -86,11 +86,4 @@ fn main() {
     fn list_commands(_req: &mut Request) -> IronResult<Response> {
         Ok(Response::with((status::Ok, "blah blah")))
     }
-
-    fn hello_world(_: &mut Request) -> IronResult<Response> {
-        Ok(Response::with((status::Ok, "Hello World!")))
-    }
-
-    Iron::new(hello_world).http("localhost:3000").unwrap();
-    println!("On 3000");
 }
