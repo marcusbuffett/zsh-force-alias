@@ -1,14 +1,14 @@
 [package]
 authors = ["Marcus Buffett <marcusbuffett@me.com>"]
-name = "force_alias"
+name = "zsh-force-alias"
 version = "0.1.0"
 
 [[bin]]
-name = "server"
+name = "force-alias-server"
 path = "src/server.rs"
 
 [[bin]]
-name = "client"
+name = "force-alias-client"
 path = "src/client.rs"
 
 [dependencies]
