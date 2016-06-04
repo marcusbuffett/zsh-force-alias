@@ -31,6 +31,10 @@ fn main() {
     router.post("/aliases", post_aliases);
 
     let router_opt = Iron::new(router).http("localhost:5571");
+    if router_opt.is_err() {
+        std::process::exit(0);
+    }
+    router_opt.unwrap();
 
     fn post_aliases(req: &mut Request) -> IronResult<Response> {
         let mut body_str = String::new();
