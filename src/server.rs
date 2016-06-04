@@ -55,7 +55,8 @@ fn main() {
         let _ = req.body.read_to_string(&mut command);
         let mut res_code = status::Ok;
         let mut aliases: Vec<alias::Alias> = Vec::new();
-        let shortened = alias::shorten_command(&command, ALIASES.lock().unwrap().deref(), &mut aliases);
+        let lengthened = alias::lengthen_command(&command, ALIASES.lock().unwrap().deref(), &mut aliases);
+        let shortened = alias::shorten_command(&lengthened, ALIASES.lock().unwrap().deref(), &mut aliases);
         let mut feedback = String::new();
         if shortened.len() != command.len() {
             res_code = status::BadRequest;
