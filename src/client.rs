@@ -5,7 +5,8 @@ use std::io::Read;
 use std::env;
 mod util;
 
-static BASE_URL: &'static str = "http://localhost:5671/";
+static BASE_URL: &'static str = "http://localhost:5571/";
+// TODO: work with vi mode in zsh
 
 fn main() {
     let client = Client::new();

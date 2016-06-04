@@ -30,7 +30,7 @@ fn main() {
     router.get("/aliases", list_aliases);
     router.post("/aliases", post_aliases);
 
-    Iron::new(router).http("localhost:5671").unwrap();
+    let router_opt = Iron::new(router).http("localhost:5571");
 
     fn post_aliases(req: &mut Request) -> IronResult<Response> {
         let mut body_str = String::new();
