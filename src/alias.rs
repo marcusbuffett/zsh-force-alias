@@ -132,34 +132,28 @@ pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
 
 impl Alias {
     fn used_by(&self, command: &str) -> Option<usize> {
-        let i_opt = util::index_of_substr(&command, &self.command);
-        if i_opt == None {
+        let idx_opt = util::index_of_word(command, &self.command);
+        if idx_opt.is_none() {
             return None;
         }
-        let i = i_opt.unwrap();
-        let preceding_ch_opt;
-        // To avoid an overflow by trying to subtract from 0
-        //
-        // There's probably a better idiom for this
-        if i == 0 {
-            preceding_ch_opt = None;
+        let idx = idx_opt.unwrap();
+        if idx == 0 || self.scope == AliasScope::Global {
+            return Some(idx);
         }
-        else {
-            preceding_ch_opt = command.chars().nth(i - 1);
-        }
-        let trailing_ch_opt = command.chars().nth(i + self.command.len());
-        let ch_opt_valid = |ch: &Option<char>| {
-            *ch == None || ch.unwrap() == ' '
-        };
-        let both_valid = vec![preceding_ch_opt, trailing_ch_opt].iter()
-            .any(|x| ch_opt_valid(x));
-        if both_valid {
-            if i == 0 || self.scope == AliasScope::Global {
-                return Some(i);
-            }
+        return None;
+    }
+
+    // TODO: dry up this and the one above, and rename
+    fn alias_used_by(&self, command: &str) -> Option<usize> {
+        let idx_opt = util::index_of_word(command, &self.alias);
+        if idx_opt.is_none() {
             return None;
         }
-        None
+        let idx = idx_opt.unwrap();
+        if idx == 0 || self.scope == AliasScope::Global {
+            return Some(idx);
+        }
+        return None;
     }
 
 
@@ -176,6 +170,23 @@ impl Alias {
             let after_alias: String = command.chars().skip(index+self.command.len()).collect();
             command = before_alias + &self.alias + &after_alias;
             contained = self.used_by(&command);
+        }
+        command
+    }
+
+    pub fn reverse_use_in(&self, command: &String) -> String {
+        //While the command contains the alias command string:
+        //  Find the location of the alias command string
+        //  Replace with alias
+        let mut command: String = command.clone();
+        // TODO: rename to _opt
+        let mut contained = self.alias_used_by(&command);
+        if contained != None {
+            // NOTE: dry this up
+            let index = contained.unwrap();
+            let before_alias = command.chars().take(index).collect::<String>(); // .chain(alias.command.chars()).collect::<String>();
+            let after_alias: String = command.chars().skip(index+self.alias.len()).collect();
+            command = before_alias + &self.command + &after_alias;
         }
         command
     }
