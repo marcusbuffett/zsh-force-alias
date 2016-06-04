@@ -59,7 +59,6 @@ fn lengthen_command_works() {
 
 pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mut Vec<Alias>) -> String {
     let mut alias_matches: Vec<Alias> = Vec::new();
-    println!("{:?}", aliases);
     for alias in aliases {
         match alias.used_by(&command) {
             Some(_) => {
@@ -243,7 +242,6 @@ fn parse_alias_declarations_works() {
     let test_cases = vec![pu_test, g_test, grep_test];
     let test_declaration = |declaration: &String, desired: &Alias| {
         let aliases = parse_alias_declarations(declaration.split("\n").collect());
-        println!("Testing {}", declaration);
         assert!(aliases.len() != 0);
         assert_eq!(aliases.get(0).unwrap(), desired);
     };
