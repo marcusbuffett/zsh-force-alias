@@ -57,7 +57,6 @@ fn send_aliases(client: &Client) {
     let mut res = client.post(&url).body(stdout).send().unwrap();
     match res.status {
         hyper::Ok => {
-            print!("Successful upload!");
             std::process::exit(0);
         }
         _ => {
