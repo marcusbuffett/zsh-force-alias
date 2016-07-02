@@ -97,7 +97,7 @@ pub fn shorten_command(command: &String, aliases: &Vec<Alias>, used_aliases: &mu
 // alias -g G="| grep"
 //
 // and turns them into a Vec<Alias>
-pub fn parse_alias_declarations(alias_declarations: Vec<&str>) -> Vec<Alias> {
+pub fn parse_alias_declarations(alias_declarations: Vec<String>) -> Vec<Alias> {
     let mut aliases : Vec<Alias> = Vec::new();
     for declaration in alias_declarations {
         // NOTE: According to IEEE 1003.1, env variables

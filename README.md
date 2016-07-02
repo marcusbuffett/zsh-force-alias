@@ -26,15 +26,15 @@ bindkey '^E' expand-aliases
 
 (force-alias-server > /dev/null &) > /dev/null 2>&1
 if [[ -z "$NO_CHECK" ]]; then
-  force-alias-client --init
+  force-alias-client --init --pid $$
 fi
 
 function force_alias_hook() {
-  if ! [[ -z "$NO_CHECK" ]]; then
+  if [[ -n "$NO_CHECK" ]]; then
     zle accept-line
     return
   fi
-  force-alias-client $BUFFER
+  force-alias-client --pid $$ -- $BUFFER
   if [[ $? -eq 1 ]]; then
     BUFFER=""
   fi
