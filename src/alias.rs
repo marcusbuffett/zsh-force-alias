@@ -261,7 +261,7 @@ fn parse_alias_declarations_works() {
     });
     let test_cases = vec![pu_test, g_test, grep_test];
     let test_declaration = |declaration: &String, desired: &Alias| {
-        let aliases = parse_alias_declarations(declaration.split("\n").collect());
+        let aliases = parse_alias_declarations(declaration.split("\n").map( |x| x.to_string() ).collect());
         assert!(aliases.len() != 0);
         assert_eq!(aliases.get(0).unwrap(), desired);
     };
