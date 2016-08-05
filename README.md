@@ -20,32 +20,17 @@ Then, add the following snippet to the bottom of your zsh file.
 ```bash
 #####################
 ## ZSH force alias ##
-#####################
-zle -N expand-aliases
-bindkey '^E' expand-aliases
-
+zle -N expand-aliases; bindkey '^E' expand-aliases
 (force-alias-server > /dev/null &) > /dev/null 2>&1
-if [[ -z "$NO_CHECK" ]]; then
-  force-alias-client --init --pid $$
-fi
-
+if [[ -z "$NO_CHECK" ]]; then force-alias-client --init --pid $$; fi
 function force_alias_hook() {
-  if [[ -n "$NO_CHECK" ]]; then
-    zle accept-line
-    return
-  fi
+  if [[ -n "$NO_CHECK" ]]; then zle accept-line; return; fi
   force-alias-client --pid $$ -- $BUFFER
-  if [[ $? -eq 1 ]]; then
-    BUFFER=""
-  fi
+  if [[ $? -eq 1 ]]; then BUFFER=""; fi
   zle accept-line
 }
-
-autoload -U add-zsh-hook
-zle -N force_alias_hook
-bindkey '^J' force_alias_hook
-bindkey '^M' force_alias_hook
-#########################
+autoload -U add-zsh-hook; zle -N force_alias_hook;
+bindkey '^J' force_alias_hook; bindkey '^M' force_alias_hook;
 ## End ZSH force alias ##
 #########################
 ```
