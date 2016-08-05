@@ -25,12 +25,10 @@ mod request_types;
 
 use request_types::{PostDeclarations, PostCommand};
 
-// TODO
-// Make hash of pid -> aliases
+type Aliases = Vec<alias::Alias>;
 
 lazy_static! {
-    // Declares a static mutex holding a vector of aliases
-    static ref PID_TO_ALIASES: Mutex<HashMap<usize, Vec<alias::Alias>>> =
+    static ref PID_TO_ALIASES: Mutex<HashMap<usize, Aliases>> =
         Mutex::new(HashMap::new());
 }
 
