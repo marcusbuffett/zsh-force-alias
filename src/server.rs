@@ -8,6 +8,7 @@ extern crate router;
 extern crate rustc_serialize;
 extern crate bodyparser;
 extern crate serde_json;
+extern crate itertools;
 
 use iron::prelude::*;
 use iron::status;
@@ -17,6 +18,7 @@ use std::sync::Mutex;
 use std::ops::Deref;
 use std::collections::HashMap;
 use std::str::FromStr;
+use itertools::Itertools;
 
 // Import other files (modules)
 mod util;
@@ -86,6 +88,7 @@ fn main() {
         // ex: git status -uno -> gsuno
         let shortened = alias::shorten_command(&lengthened, aliases, &mut used_aliases);
         let mut feedback = String::new();
+        let used_aliases: Vec<alias::Alias> = used_aliases.into_iter().unique().collect();
         // If the shortened command is, in fact, shorter,
         // then return a BadRequest code
         if shortened.len() != body.command.len() {

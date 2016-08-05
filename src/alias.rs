@@ -1,12 +1,12 @@
 use util;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum AliasScope {
     Normal,
     Global
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Alias {
     scope: AliasScope,
     alias: String,
