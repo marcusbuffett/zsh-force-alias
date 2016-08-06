@@ -8,7 +8,7 @@ First, install cargo, rust, and the binaries in this package (through cargo).
 ```bash
 brew tap cheba/rust-nightly
 brew install rust-nightly
-git clone https://github.com/marcusbuffett/force_alias
+git clone https://github.com/marcusbuffett/zsh-force-alias
 pushd force_alias
 cargo install --path .
 popd
