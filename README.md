@@ -2,6 +2,10 @@
 
 This is a program that will force you to use your zsh aliases. It works by installing a hook that executes before any commands. It uses a client-server architecture, each client being invidual shells and the server running in the background on port 5571.
 
+## Usage
+
+https://asciinema.org/a/81955
+
 ## Installation
 
 First, install cargo, rust, and the binaries in this package (through cargo).
