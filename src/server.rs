@@ -1,7 +1,8 @@
 #![feature(custom_derive, plugin)]
-#![plugin(serde_macros)]
 
 #[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate serde_derive;
 
 extern crate iron;
 extern crate router;
@@ -39,10 +40,10 @@ fn main() {
     let mut router = Router::new();
 
     // Define routes and corresponding handlers
-    router.get("/commands", list_commands);
-    router.post("/commands", check_command);
-    router.get("/aliases", list_aliases);
-    router.post("/aliases", post_aliases);
+    router.get("/commands", list_commands, "list_commands");
+    router.post("/commands", check_command, "check_commands");
+    router.get("/aliases", list_aliases, "list_aliases");
+    router.post("/aliases", post_aliases, "post_aliases");
 
     // Returns an Option, depending on whether the port bind succeeded
     let router_opt = Iron::new(router).http("localhost:5571");
