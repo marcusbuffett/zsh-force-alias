@@ -23,7 +23,6 @@ Then, add the following snippet to the bottom of your zsh file.
 ```bash
 #####################
 ## ZSH force alias ##
-zle -N expand-aliases; bindkey '^E' expand-aliases
 (force-alias-server > /dev/null &) > /dev/null 2>&1
 if [[ -z "$NO_CHECK" ]]; then force-alias-client --init --pid $$; fi
 function force_alias_hook() {
