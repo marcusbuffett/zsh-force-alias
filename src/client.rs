@@ -83,7 +83,7 @@ fn send_aliases(client: &Client, pid: usize) {
     // Have to manually load ~/.zshrc and /etc/zshrc because
     // zsh doesn't respect the --login and -c flags together
     let full_command = format!(
-    "export NC=1; \
+    "export NO_CHECK=1; \
     [ -f /etc/zshrc ] && . /etc/zshrc; \
     [ -f ~/.zshrc ] && . ~/.zshrc; \
     {}", command);
