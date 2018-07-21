@@ -11,6 +11,7 @@ https://asciinema.org/a/81955
 First, install cargo, rust, and the binaries in this package (through cargo).
 ```bash
 curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- --channel=nightly
+echo "PATH=$PATH:~/.cargo/bin/ >> ~/.zshrc
 git clone https://github.com/marcusbuffett/zsh-force-alias force_alias
 pushd force_alias
 cargo install --path .
